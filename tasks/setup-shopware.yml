@@ -18,15 +18,22 @@
 #    path: "{{ apache_vhosts[0].documentroot }}/.git"
 #  when: not shopware.stat.exists
 
+- name: Check if build directory exists
+  stat:
+    path: "{{ apache_vhosts[0].documentroot }}/build"
+  register: build_dir
+
 - name: Prepare Shopware Ant
   shell: ant write-properties -Dapp.host={{ ansible_fqdn }} -Dapp.path=/. -Ddb.name={{ mysql_databases[0].name }} -Ddb.host=localhost -Ddb.user={{ mysql_users[0].name }} -Ddb.password={{ mysql_users[0].password }}
   args:
     chdir: "{{ apache_vhosts[0].documentroot }}/build"
+  when: build_dir.stat.exists
 
 - name: Build Shopware
   shell: ant build-unit
   args:
     chdir: "{{ apache_vhosts[0].documentroot }}/build"
+  when: build_dir.stat.exists
 
 - name: Ensure ~/bin exists
   file:
