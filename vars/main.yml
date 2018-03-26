@@ -8,6 +8,7 @@ additional_software:
   - zip
   - curl
   - ntp
+  - tzdata 
 # --------------------------------
 # apache
 # --------------------------------
