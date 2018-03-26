@@ -2,7 +2,9 @@
 project_tag: 'shopware-role'
 install_project_data: false
 setup_shopware: true
+
 app_host: localhost
+lamp_prepare_doc_root: true
 
 mysql_root_password: "{{ project_tag }}"
 mysql_databases:
