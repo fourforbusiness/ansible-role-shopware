@@ -1,0 +1,22 @@
+<?php
+$_SERVER["local_env"] = true;
+
+return array(
+    'db' =>
+        array(
+            'host' => 'localhost',
+            'port' => '3306',
+            'username' => '{{ mysql_users[0].name }}',
+            'password' => '{{ mysql_users[0].password }}',
+            'dbname' => '{{ mysql_databases[0].name }}',
+        ),
+    'phpsettings' => [
+        'display_errors' => 1,
+    ],
+
+    'front' => [
+        'showException' => true,
+        'throwExceptions' => true,
+        'noErrorHandler' => false,
+    ],
+);

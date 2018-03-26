@@ -1,0 +1,14 @@
+---
+- name: load all vars
+  include_vars:
+    dir: "{{ role_path }}/vars"
+- include_tasks: setup-shopware.yml
+  become: false
+  when:
+    - setup_shopware is defined
+    - setup_shopware == True
+- include_tasks: install-project-data.yml
+  become: false
+  when:
+    - install_project_data is defined
+    - install_project_data == True

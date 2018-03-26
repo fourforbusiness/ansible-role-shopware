@@ -1,0 +1,23 @@
+---
+allow_duplicates: false
+dependencies:
+  - { role: fourforbusiness.basic-setup }
+  - { role: fourforbusiness.copy-files }
+  - { role: fourforbusiness.dev-lamp }
+  - { role: fourforbusiness.mysql-prepare-db }
+  - { role: Akman.ioncube-loader }
+  - { role: geerlingguy.composer }
+  - { role: geerlingguy.nodejs }
+galaxy_info:
+  author: "four for business AG"
+  description: Installs a Shopware-Ready environment on the target machine
+  company: "four for business AG"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.4
+  github_branch: master
+  platforms:
+    - name: Ubuntu
+      versions:
+        - xenial
+  galaxy_tags:
+    - shopware

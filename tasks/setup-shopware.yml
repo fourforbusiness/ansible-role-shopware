@@ -1,0 +1,78 @@
+---
+
+- name: Check if shopware.php file already exists
+  stat:
+    path: "{{ apache_vhosts[0].documentroot }}/shopware.php"
+  register: shopware
+
+- name: Download Shopware
+  git:
+    repo: https://github.com/shopware/shopware.git
+    clone: yes
+    dest: "{{ apache_vhosts[0].documentroot }}"
+  when: not shopware.stat.exists
+
+#- name: Delete .git Folder
+#  file:
+#    state: absent
+#    path: "{{ apache_vhosts[0].documentroot }}/.git"
+#  when: not shopware.stat.exists
+
+- name: Prepare Shopware Ant
+  shell: ant write-properties -Dapp.host={{ ansible_fqdn }} -Dapp.path=/. -Ddb.name={{ mysql_databases[0].name }} -Ddb.host=localhost -Ddb.user={{ mysql_users[0].name }} -Ddb.password={{ mysql_users[0].password }}
+  args:
+    chdir: "{{ apache_vhosts[0].documentroot }}/build"
+
+- name: Build Shopware
+  shell: ant build-unit
+  args:
+    chdir: "{{ apache_vhosts[0].documentroot }}/build"
+
+- name: Ensure ~/bin exists
+  file:
+    path: ~/bin
+    state: directory
+
+- name: Ensure ~/bin is in PATH
+  lineinfile:
+    dest: ~/.bashrc
+    line: 'PATH="$HOME/bin:$PATH"'
+
+- name: download sw cli tools
+  get_url:
+    url: http://shopwarelabs.github.io/sw-cli-tools/sw.phar
+    dest: ~/bin/sw
+    mode: 0755
+  tags: sw-cli-tools
+
+- name: download and extract sw example images
+  unarchive:
+    src: http://releases.s3.shopware.com/test_images.zip
+    dest: "{{ apache_vhosts[0].documentroot }}"
+    remote_src: yes
+
+- name: migrate media files
+  shell: bin/console sw:media:migrate
+  args:
+    chdir: "{{ apache_vhosts[0].documentroot }}"
+
+- name: get files for deletion by file glob
+  find:
+    paths: "{{ apache_vhosts[0].documentroot }}"
+    patterns: "^.*\\.(txt|md)"
+    use_regex: true
+  register: sw_files_clean_up
+
+- name: cleanup shopware files not needed for running shopware
+  file:
+    state: absent
+    path: "{{ item.path }}"
+    force: true
+  with_items: "{{ sw_files_clean_up.files }}"
+
+- name: cleanup shopware files not needed for running shopware
+  file:
+    state: absent
+    path: "{{ apache_vhosts[0].documentroot }}/{{ item }}"
+    force: true
+  with_items: ['.editorconfig', '.gitignore', '.travis.yml', '.php_cs.dist', '.psh.yaml.dist', 'docker-compose.yml', 'config.php.dist', 'psh.phar', 'composer.phar', '.git', '.github', '_sql', 'build', 'dev-ops', 'snippets']

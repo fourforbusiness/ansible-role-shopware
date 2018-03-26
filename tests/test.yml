@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: true
+  vars:
+    project_tag: 'shopware-role'
+    install_project_data: false
+    setup_shopware: true
+  roles:
+    - role_under_test

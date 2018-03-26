@@ -1,0 +1,140 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+
+    RewriteBase /
+    # Https config for the backend
+    #RewriteCond %{HTTPS} !=on
+    #RewriteRule backend/(.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    RewriteRule shopware.dll shopware.php
+    RewriteRule files/documents/.* engine [NC,L]
+    RewriteRule backend/media/(.*) media/$1 [NC,L]
+
+    RewriteCond %{REQUEST_URI} !(\/(engine|files|templates|themes|web)\/)
+    RewriteCond %{REQUEST_URI} !(\/media\/(archive|banner|image|music|pdf|unknown|video)\/)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ shopware.php [PT,L,QSA]
+
+    # Fix missing authorization-header on fast_cgi installations
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+</IfModule>
+
+<IfModule mod_alias.c>
+    # Block access to VCS directories
+    RedirectMatch 404 /\\.(svn|git|hg|bzr|cvs)(/|$)
+
+    # Restrict access to root folder files
+    RedirectMatch 404 /(composer\.(json|lock)|README\.md|UPGRADE\.md)$
+</IfModule>
+
+# Set environment
+SetEnv SHOPWARE_ENV {{ shopware_environment }}
+
+DirectoryIndex shopware.php
+
+# Disables download of configuration
+<Files ~ "\.(tpl|yml|ini)$">
+    # Deny all requests from Apache 2.4+.
+    <IfModule mod_authz_core.c>
+          Require all denied
+    </IfModule>
+</Files>
+
+# Enable gzip compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/xml text/plain text/css text/javascript application/javascript application/json image/svg+xml image/svg
+</IfModule>
+
+<Files ~ "\.(jpe?g|png|gif|css|js|woff|eot)$">
+    <IfModule mod_expires.c>
+        ExpiresActive on
+        ExpiresDefault "access plus 1 month"
+    </IfModule>
+
+    <IfModule mod_headers.c>
+        Header append Cache-Control "public"
+        Header unset ETag
+    </IfModule>
+
+    FileETag None
+</Files>
+
+# Match generated files like:
+# 1429684458_t22_s1.css
+# 1429684458_t22_s1.js
+<FilesMatch "([0-9]{10})_(.+)\.(js|css)$">
+    <ifModule mod_headers.c>
+        Header set Cache-Control "max-age=31536000, public"
+        <filesMatch "\\.(ico|pdf|flv|jpg|jpeg|png|gif|swf|svg)$">
+        Header set Cache-Control "max-age=2592000, public"
+        </filesMatch>
+        <filesMatch "\\.(woff|eot|ttf)$">
+        Header set Cache-Control "max-age=2592000, public"
+        </filesMatch>
+        <filesMatch "\\.(css)$">
+        Header set Cache-Control "max-age=604800, public"
+        </filesMatch>
+        <filesMatch "\\.(js)$">
+        Header set Cache-Control "max-age=216000, private"
+        </filesMatch>
+        <filesMatch "\\.(xml|txt)$">
+        Header set Cache-Control "max-age=216000, public, must-revalidate"
+        </filesMatch>
+        <filesMatch "\\.(html|htm|php)$">
+        Header set Cache-Control "max-age=1, private, must-revalidate"
+        </filesMatch>
+        Header unset ETag
+        Header unset Last-Modified
+    </ifModule>
+
+    <IfModule mod_expires.c>
+        ExpiresActive on
+        ExpiresDefault "access plus 1 year"
+    </IfModule>
+</FilesMatch>
+
+<IfModule mod_mime.c>
+    AddType application/vnd.ms-fontobject .eot
+    AddType application/x-font-ttf .ttf
+    AddType application/x-font-opentype .otf
+    AddType application/x-font-woff .woff
+    AddType image/svg+xml .svg
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 seconds"
+    ExpiresByType image/x-icon "access plus 604800 seconds"
+    ExpiresByType image/jpeg "access plus 604800 seconds"
+    ExpiresByType image/png "access plus 604800 seconds"
+    ExpiresByType image/jpg "access plus 604800 seconds"
+    ExpiresByType image/gif "access plus 604800 seconds"
+    ExpiresByType image/ico "access plus 604800 seconds"
+    ExpiresByType application/x-shockwave-flash "access plus 432000 seconds"
+    ExpiresByType text/css "access plus 432000 seconds"
+    ExpiresByType text/javascript "access plus 432000 seconds"
+    ExpiresByType application/x-javascript "access plus 432000 seconds"
+    ExpiresByType text/html "access plus 600 seconds"
+    ExpiresByType application/xhtml+xml "access plus 600 seconds"
+    ExpiresByType application/x-font-woff "access plus 604800 seconds"
+    ExpiresByType application/vnd.ms-fontobject "access plus 600 seconds"
+    ExpiresByType application/x-font-ttf "access plus 600 seconds"
+    ExpiresByType application/x-font-opentype "access plus 600 seconds"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/svg  "access plus 1 month"
+</IfModule>
+
+
+# Disables auto directory index
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header append X-Frame-Options SAMEORIGIN
+</IfModule>

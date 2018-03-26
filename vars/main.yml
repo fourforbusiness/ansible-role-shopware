@@ -1,0 +1,51 @@
+# --------------------------------
+# base VM setup specific variables
+# --------------------------------
+additional_software:
+  - wget
+  - ant
+  - git
+  - zip
+  - curl
+  - ntp
+# --------------------------------
+# apache
+# --------------------------------
+apache_options: "+Indexes +FollowSymLinks +MultiViews"
+apache_mods_enabled:
+  - rewrite.load
+  - autoindex.load
+  - expires.load
+  - headers.load
+  - proxy.load
+# --------------------------------
+# php
+# --------------------------------
+php_version: "7.1"
+# this needs to be updated if you change the php version, or ioncube will stop working
+# see also https://packages.debian.org/de/sid/virtual/ (search for "phpapi-")
+# PHP 7.0: php_package_id: "20151012"
+php_package_id: "20160303"
+php_packages_extra:
+    - php{{ php_version }}-dev
+    - php{{ php_version }}-curl
+    - php{{ php_version }}-gd
+    - php{{ php_version }}-mysql
+    - php{{ php_version }}-simplexml
+    - php{{ php_version }}-zip
+    - php{{ php_version }}-soap
+    - php-xdebug
+#PHP IonCube
+workspace: /root
+php_ioncube_loader_module_path: /usr/lib/php/{{ php_package_id }}
+php_ioncube_loader_module_filename: ioncube_loader_lin_{{ php_version }}.so
+php_ioncube_loader_config_filename: 000-ioncube.ini
+php_extension_conf_paths:
+  - /etc/php/{{ php_version }}/fpm/conf.d
+  - /etc/php/{{ php_version }}/apache2/conf.d
+  - /etc/php/{{ php_version }}/cli/conf.d
+# --------------------------------
+# nodejs
+# --------------------------------
+nodejs_npm_global_packages:
+  - yarn

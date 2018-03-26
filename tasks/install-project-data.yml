@@ -1,0 +1,4 @@
+- name: install project database if given
+  include_role:
+    name: fourforbusiness.mysql-prepare-db
+  when: install_project_data
