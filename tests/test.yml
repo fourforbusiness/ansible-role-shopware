@@ -1,9 +1,9 @@
 ---
 - hosts: all
   become: true
-  vars:
-    project_tag: 'shopware-role'
-    install_project_data: false
-    setup_shopware: true
+  pre_tasks:
+    - name: load all vars
+      include_vars:
+        file: 'test_vars.yml'
   roles:
     - role_under_test

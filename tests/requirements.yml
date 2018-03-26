@@ -1,0 +1,10 @@
+---
+# ffb-roles
+- src: fourforbusiness.basic-setup
+- src: fourforbusiness.dev-lamp
+- src: fourforbusiness.mysql-prepare-db
+- src: fourforbusiness.copy-files
+# project specific
+- src: Akman.ioncube-loader
+- src: geerlingguy.composer
+- src: geerlingguy.nodejs

@@ -1,0 +1,4 @@
+---
+project_tag: 'shopware-role'
+install_project_data: false
+setup_shopware: true
