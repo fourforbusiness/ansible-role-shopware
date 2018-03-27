@@ -54,11 +54,11 @@
   
 - name: download images zip
   get_url:
-    url: http://releases.s3.shopware.com/test_images.zip
-    dest: "{{ apache_vhosts[0].documentroot }}/test_images.zip"
+    url: http://releases.s3.shopware.com/test_images_since_5.1.zip
+    dest: "{{ apache_vhosts[0].documentroot }}/test_images_since_5.1.zip"
 
 - name: extract sw example images
-  shell: unzip -o test_images.zip -d.
+  shell: unzip -o test_images_since_5.1.zip -d.
   args:
     chdir: "{{ apache_vhosts[0].documentroot }}"
     executable: /bin/bash
