@@ -62,7 +62,7 @@
   args:
     chdir: "{{ apache_vhosts[0].documentroot }}"
     executable: /bin/bash
-    creates: "{{ apache_vhosts[0].documentroot }}/media/image/Store.jpg"
+    creates: "{{ apache_vhosts[0].documentroot }}/media/image/00/0d/31/Kraftstoff-Sorten_57x57.jpg"
   register: sw_images_status
 
 - name: migrate media files
