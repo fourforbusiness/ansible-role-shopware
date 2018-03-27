@@ -8,9 +8,10 @@
   when:
     - setup_shopware is defined
     - setup_shopware == True
+  notify: prepare filesystem
+  
 - include_tasks: install-project-data.yml
   become: false
-  notify: prepare filesystem
   when:
     - install_project_data is defined
     - install_project_data == True
