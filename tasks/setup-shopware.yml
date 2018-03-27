@@ -51,17 +51,25 @@
     dest: ~/bin/sw
     mode: 0755
   tags: sw-cli-tools
+  
+- name: download images zip
+  get_url:
+    url: http://releases.s3.shopware.com/test_images.zip
+    dest: "{{ apache_vhosts[0].documentroot }}/test_images.zip"
 
-- name: download and extract sw example images
-  unarchive:
-    src: http://releases.s3.shopware.com/test_images.zip
-    dest: "{{ apache_vhosts[0].documentroot }}"
-    remote_src: yes
+- name: extract sw example images
+  shell: unzip -o test_images.zip -d.
+  args:
+    chdir: "{{ apache_vhosts[0].documentroot }}"
+    executable: /bin/bash
+    creates: "{{ apache_vhosts[0].documentroot }}/media/image/Store.jpg"
+  register: sw_images_status
 
 - name: migrate media files
   shell: bin/console sw:media:migrate
   args:
     chdir: "{{ apache_vhosts[0].documentroot }}"
+  when: sw_images_status.changed
 
 - name: get files for deletion by file glob
   find:
