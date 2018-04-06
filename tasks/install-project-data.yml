@@ -2,3 +2,7 @@
   include_role:
     name: fourforbusiness.mysql-prepare-db
   when: install_project_data
+- name: install project files if given
+  include_role:
+    name: fourforbusiness.copy-files
+  when: install_project_data
