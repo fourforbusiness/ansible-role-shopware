@@ -1,5 +1,7 @@
 # Ansible Role: ffb Shopware
 
+[![Build Status](https://api.travis-ci.org/fourforbusiness/ansible-role-shopware.svg?branch=master)](https://travis-ci.org/fourforbusiness/ansible-role-shopware/builds) [![Ansible-Galaxy](https://img.shields.io/ansible/role/24582.svg)](https://galaxy.ansible.com/fourforbusiness/shopware/) ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+
 Role for Shopware-Development on the target machine
 
 ## Installed Software
