@@ -5,6 +5,6 @@
 - src: fourforbusiness.mysql-prepare-db
 - src: fourforbusiness.copy-files
 # project specific
-- src: akman.ioncube-loader
+- src: akman.ioncube_loader
 - src: geerlingguy.composer
 - src: geerlingguy.nodejs
