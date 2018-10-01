@@ -5,7 +5,7 @@ dependencies:
   - { role: fourforbusiness.copy-files }
   - { role: fourforbusiness.dev-lamp }
   - { role: fourforbusiness.mysql-prepare-db }
-  - { role: Akman.ioncube-loader }
+  - { role: akman.ioncube-loader }
   - { role: geerlingguy.composer }
   - { role: geerlingguy.nodejs }
 galaxy_info:
